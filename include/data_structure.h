@@ -5,6 +5,7 @@ namespace dataStructure{
     void defineAnMat();
     void getMatrixValue();
     void test();
+    void test_integral();
 
 }
 

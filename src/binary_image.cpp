@@ -89,32 +89,33 @@ cv::Mat binImg::BinaryImageAdative(const cv::Mat& inputImage, bool isShow=false,
     int radius = (windowSize - 1) / 2;
     width = img_size.width; height = img_size.height;
 
-    cv::Mat inter_mat(height + 1, width + 1, CV_32FC1, cv::Scalar(0.0));
+    cv::Mat inter_mat;
     cv::Mat binary_image(height, width, CV_8UC1);
 
     cv::integral(inputImage, inter_mat, -1);
-    
 
     for(int i = 0; i < height; i++){
         for(int j = 0; j < width; j++){
             
-            left = (i - radius) > 0 ? i - radius + 1 :  1;
-            right = (i + radius) <= height ? i + radius : height;
+            top = (i - radius) > 0 ? i - radius + 1 :  1;
+            bottom = (i + radius) <= height ? i + radius : height;
             
-            top = (j - radius) > 0 ? j - radius + 1 : 1;
-            bottom = (j + radius) < width - 1 ? j - radius :width - 1;
+            left = (j - radius) > 0 ? j - radius + 1 : 1;
+            right = (j + radius) <= width - 1 ? j + radius : width - 1;
 
             count = (bottom - top) * (right - left);
-            interal_value = inter_mat.at<float>(bottom, right) - inter_mat.at<float>(top - 1, right)
-                     - inter_mat.at<float>(bottom, left - 1 ) + inter_mat.at<float>(top - 1, left - 1);
+            // printf("Left: %d, Right: %d, Top: %d, Bottom: %d", left, right, top, bottom);
+            // printf("inter_mat.at<float>(bottom, right) %d", inter_mat.at<int>(bottom, right));
+            interal_value = inter_mat.at<int>(bottom, right) - inter_mat.at<int>(top - 1, right)
+                     - inter_mat.at<int>(bottom, left - 1 ) + inter_mat.at<int>(top - 1, left - 1);
 
-            printf("interal_value * (1- t) %f \n", interal_value);
-            printf("inter_mat.at<float>(bottom, right) %f\n", inter_mat.at<float>(bottom, right));
+            // printf("interal_value * (1- t) %d \n", interal_value);
+            // printf("inputImage.at<uint8_t>(i, j) * count %d\n", inputImage.at<uint8_t>(i, j) * count);
 
-            if(inputImage.at<int8_t>(i, j) * count < interal_value * (1- t)){
-                binary_image.at<int8_t>(i, j) = 0;
+            if(inputImage.at<uint8_t>(i, j) * count > interal_value * (1- t)){
+                binary_image.at<uint8_t>(i, j) = 0;
             }
-            else binary_image.at<int8_t>(i, j) = 255;
+            else binary_image.at<uint8_t>(i, j) = 255;
         }
     }
 
@@ -136,7 +137,11 @@ void binImg::test(){
 
     // binImg::binaryImageWithThreshold(gray, 128, 255, true);
     binImg::binaryImageWithOtus(gray, true);
-    binImg::BinaryImageAdative(gray, true, 9, 0.85);
+    binImg::BinaryImageAdative(gray, true, 7, 0.25);
+
+    cv::Mat cv_binary;
+    cv::adaptiveThreshold(gray, cv_binary, 255.0, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, 3, 5);
+    tools::showImage("cvbin", cv_binary);
 
 
     }

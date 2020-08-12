@@ -1,4 +1,4 @@
-#include "opencv4/opencv2/core/core.hpp"
+#include "opencv4/opencv2/core.hpp"
 #include "opencv4/opencv2/highgui.hpp"
 #include "opencv4/opencv2/imgproc.hpp"
 #include <opencv4/opencv2/core/hal/interface.h>
@@ -34,6 +34,21 @@ void dataStructure::getMatrixValue(){
 
 
 }
+
+void dataStructure::test_integral(void){
+    cv::Mat image(3, 3, CV_8UC1);
+
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            image.at<uint8_t>(i, j) = i * 3 + j;
+        }
+    }
+    tools::printMatU(image);
+    cv::Mat integral_image;
+    cv::integral(image, integral_image, -1);
+    tools::printMatF(integral_image);
+}
+
 
 void dataStructure::test(){
     // defineAnMat();

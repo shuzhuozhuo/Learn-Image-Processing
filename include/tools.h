@@ -8,8 +8,8 @@ namespace tools{
 
     void showImage(std::string windowName, cv::Mat image);
     void printScalar(const cv::Scalar& vec);
+    void printMatU(const cv::Mat& inputImage);
+    void printMatD(const cv::Mat& inputImage);
 }
-
-
 
 #endif
